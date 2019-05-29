@@ -20,6 +20,11 @@ const user = (sequelize, DataTypes) => {
             type: DataTypes.STRING(250),
             allowNull: false,
         },
+        points: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            defaultValue: 0,
+        },
 
 
     });
@@ -34,8 +39,10 @@ const user = (sequelize, DataTypes) => {
             // otherKey: 'user_userId',
             // foreignKey: 'employeeId',
             constraints: false
-        }
-        );
+        });
+        User.hasMany(models.Comment, {
+            //todo: properties?
+        });
     };
     return User;
 };

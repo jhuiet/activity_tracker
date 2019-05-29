@@ -1,8 +1,9 @@
 const activity = (sequelize, DataTypes) => {
     const Activity = sequelize.define('activity', {
         activityId: {
-            type: DataTypes.INTEGER,
-            primaryKey: true
+            type: DataTypes.UUID,
+            defaultValue: DataTypes.UUIDV1,
+            primaryKey: true,
         },
         activityName: {
             type: DataTypes.STRING,

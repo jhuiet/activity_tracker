@@ -15,7 +15,7 @@ const sequelize = new Sequelize({
   });
 
 
-  
+
 const models = {
     Activity_Attendance: sequelize.import('./activity_attendance'),
     User: sequelize.import('./user'),

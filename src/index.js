@@ -9,6 +9,11 @@ import routes from './routes';
 
 const app = express();
 
+// app.use('/activity_attendance', routes.activity_attendance);
+app.use('/users', routes.user);
+// app.use('/activity', routes.activity);
+
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: true
@@ -21,9 +26,7 @@ app.use(async (req, res, next) => {
     next();
 });
 
-app.use('/session', routes.session);
-app.use('/users', routes.user);
-app.use('/messages', routes.message);
+
 
 
 
