@@ -1,6 +1,6 @@
 const user = (sequelize, DataTypes) => {
     const User = sequelize.define('user', {
-        employeeId: {
+        Id: {
             type: DataTypes.INTEGER,
             primaryKey: true,
         },
@@ -35,13 +35,16 @@ const user = (sequelize, DataTypes) => {
             through: {
                 model: models.Activity_Attendance
             },
-            foreignKey: 'user_userId',
+            foreignKey: 'userId', //todo: maybe caused error, was before user_userid in the other model
             // otherKey: 'user_userId',
             // foreignKey: 'employeeId',
             constraints: false
         });
         User.hasMany(models.Comment, {
             //todo: properties?
+        });
+        User.hasMany(models.Request_Day, {
+            //todo same
         });
     };
     return User;

@@ -1,21 +1,26 @@
 const activity_attendance = (sequelize, DataTypes) => {
     const Activity_Attendance = sequelize.define('activity_attendance', {
-        attendanceId: {
+        Id: {
             type: DataTypes.UUID,
             defaultValue: DataTypes.UUIDV1,
             primaryKey: true
         },
-        user_userId: {
+        userId: {
             type: DataTypes.INTEGER,
             allowNull: false
         },
-        activity_activityId: {
+        activityId: {
             type: DataTypes.INTEGER,
             allowNull: false
         },
-        attendingStatus: {
+        rsvp: {
             type: DataTypes.STRING,
             defaultValue: 'Not Attending'
+        },
+        attendance: {
+            type: DataTypes.BOOLEAN,
+            allowNull: false,
+            defaultValue: false,
         }
     });
 

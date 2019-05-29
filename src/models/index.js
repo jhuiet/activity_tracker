@@ -20,7 +20,10 @@ const models = {
     Activity_Attendance: sequelize.import('./activity_attendance'),
     User: sequelize.import('./user'),
     Activity: sequelize.import('./activity'),
+    Comment: sequelize.import('./comment'),
+    Request_Day: sequelize.import('./request_day'),
 };
+
 //call the associate method of each model, building db relations.
 Object.keys(models).forEach(key => {
     if ('associate' in models[key]) {
