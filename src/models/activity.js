@@ -21,6 +21,10 @@ const activity = (sequelize, DataTypes) => {
             type: DataTypes.DATE,
             allowNull: false,
         },
+        recurring: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: false,
+        },
         activityCreator: {
             type: DataTypes.STRING(50),  //todoDan: fk or naw?
             allowNull: false,
