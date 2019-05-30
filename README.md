@@ -13,5 +13,10 @@ CREATE USER [name] with encrypted password '[password]';
 ALTER ROLE [name] with [];
 
 
+decent express/node.js guide
 
 https://www.robinwieruch.de/postgresql-express-node-rest-api/
+
+swagger:
+
+https://swagger.io/docs/specification/basic-structure/
