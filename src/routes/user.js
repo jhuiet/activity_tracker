@@ -36,8 +36,6 @@ router.delete('/:userId', async (req, res) => {
 });
 
 router.put('/:userId', async (req, res) => {
-
-  //todo: req.body.points??
   const user = await req.context.models.User.update({
     points: req.body.points,
   }, {

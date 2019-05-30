@@ -3,7 +3,7 @@ import user from './user';
 import activity_attendance from './activity_attendance';
 
 export default {
-//   activity,
+  activity,
   user,
 //   activity_attendance,
 };
