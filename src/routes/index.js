@@ -5,5 +5,5 @@ import activity_attendance from './activity_attendance';
 export default {
   activity,
   user,
-//   activity_attendance,
+  activity_attendance,
 };

@@ -1,8 +1,8 @@
 const request_day = (sequelize, DataTypes) =>{
     const Request_Day = sequelize.define('request_day', {
         Id: {
-            type: DataTypes.UUID,
-            defaultValue: DataTypes.UUIDV1,
+            type: DataTypes.INTEGER,
+            autoIncrement: true,
             primaryKey: true,
         },
         // userId: {

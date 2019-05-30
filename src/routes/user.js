@@ -4,12 +4,12 @@ const router = Router();
 
 router.post('/', async (req, res) => {
   const user = await req.context.models.User.create({
-    Id: req.body.userId,
     firstName: req.body.firstName,
     lastName: req.body.lastName,
     email: req.body.email,
     password: req.body.password,
-    points: req.body.points
+    points: req.body.points,
+    phoneNumbur: req.body.phoneNumber,
   });
   return res.status(status.CREATED).json(user);
 });
@@ -35,35 +35,26 @@ router.delete('/:userId', async (req, res) => {
   return res.status(status.OK).json(user);
 });
 
-router.put('/:userId', async (req, res) => {
-  const user = await req.context.models.User.update({
-    points: req.body.points,
+router.put('/:userId', async (req, res, next) => {
+  req.context.models.User.update({
+    firstName: req.body.firstName,
+    lastName: req.body.lastName,
+    email: req.body.email,
+    password: req.body.password,
+    phoneNumbur: req.body.phoneNumber,
+    points: req.body.points
   }, {
+    returning: true,
     where: {
       id: req.params.userId
     }
-  });
-  res.status(status.OK).json(user);
-})
-
-//request body has poinst: #
-router.put('/:userId', async (req, res) => {
-  const user = await req.context.model.User.update({
-    points: req.body.points }, {
-      where: {
-        id: req.params.userId
-      }
-  });
-  res.status(status.OK).json(user);
-  // req.context.model.User.update({
-  //   points: req.body.points }, {  //or req.params.points
-  //     where: {
-  //       id: req.params.userId
-  //     }
-  // }).then(() => {
-  //   return user;
-  // })
+  }).then(function( result ) {
+    res.status(status.OK).json(req.body)
+  })
+  .catch(next);
 });
+
+
 
 
 

@@ -1,23 +1,23 @@
 const activity = (sequelize, DataTypes) => {
     const Activity = sequelize.define('activity', {
-        Id: {
-            type: DataTypes.UUID,
-            defaultValue: DataTypes.UUIDV1,
+        id: {
+            type: DataTypes.INTEGER,
+            autoIncrement: true,
             primaryKey: true,
         },
-        activityName: {
+        name: {
             type: DataTypes.STRING,
             allowNull: false,
         },
-        activityLocation: {
+        location: {
             type: DataTypes.STRING(80),
             allowNull: false,
             defaultValue: 'Seven Hills Park Campus',
         },
-        activityDescription: {
+        description: {
             type: DataTypes.STRING(250),
         },
-        activityDateTime: {
+        dateTime: {
             type: DataTypes.DATE,
             allowNull: false,
         },
@@ -25,8 +25,8 @@ const activity = (sequelize, DataTypes) => {
             type: DataTypes.BOOLEAN,
             defaultValue: false,
         },
-        activityCreator: {
-            type: DataTypes.STRING(50),  //todoDan: fk or naw?
+        creator: {
+            type: DataTypes.STRING(50),  //todo: create a fk restraint with user
             allowNull: false,
         },
         givesPoints: {
@@ -41,9 +41,9 @@ const activity = (sequelize, DataTypes) => {
             through: {
                 model: models.Activity_Attendance
             },
-            foreignKey: 'activityId', //todo: was activity_activityId before in other model
+            foreignKey: 'activityId', 
         }); //onDelete: 'CASCADE'
-        
+
     }
     return Activity;
 }

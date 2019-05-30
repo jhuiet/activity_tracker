@@ -14,34 +14,36 @@ router.get('/:activityId', async (req, res) => {
 
 router.post('/', async (req, res) => {
     const activity = await req.context.models.Activity.create({
-        Id: req.body.activityId,
-        activityName: req.body.activityName,
-        activityLocation: req.body.activityLocation,
-        activityDescription: req.body.activityDescription,
-        activityDateTime: req.body.activityDateTime,
+        // id: req.body.id,
+        name: req.body.name,
+        location: req.body.location,
+        description: req.body.description,
+        dateTime: req.body.dateTime,
         recurring: req.body.recurring,
-        activityCreator: req.body.activityCreator,
+        creator: req.body.creator,
         givesPoints: req.body.givesPoints
     });
     return res.status(status.CREATED).json(activity);
 });
 
 router.put('/:activityId', async (req, res) => {
-    const activity = await req.context.models.Activity.update({
-        Id: req.body.activityId,
-        activityName: req.body.activityName,
-        activityLocation: req.body.activityLocation,
-        activityDescription: req.body.activityDescription,
-        activityDateTime: req.body.activityDateTime,
+    req.context.models.Activity.update({
+        // Id: req.body.activityId,
+        name: req.body.name,
+        location: req.body.location,
+        description: req.body.description,
+        dateTime: req.body.dateTime,
         recurring: req.body.recurring,
-        activityCreator: req.body.activityCreator,
-        givesPoints: req.body.givesPoints   
+        creator: req.body.ireator,
+        givesPoints: req.body.givesPoints
     }, {
         where: {
             id: req.params.activityId,
         }
+    })
+    .then(() => {
+        return res.status(status.OK).json(req.body);
     });
-    return res.status(status.OK).json(activity);
 });
 
 router.delete('/:activityId', async (req, res) => {

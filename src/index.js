@@ -23,7 +23,7 @@ app.use(bodyParser.urlencoded({
     extended: true
 }));
 
-// app.use('/activity_attendance', routes.activity_attendance);
+app.use('/activity_attendance', routes.activity_attendance);
 app.use('/users', routes.user);
 app.use('/activity', routes.activity);
 
