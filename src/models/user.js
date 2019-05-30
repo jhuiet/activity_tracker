@@ -28,19 +28,14 @@ const user = (sequelize, DataTypes) => {
             allowNull: false,
             defaultValue: 0,
         },
-
-
     });
 
     User.associate = models => {
         User.belongsToMany(models.Activity, {
-            // as: 'user_userId',
             through: {
                 model: models.Activity_Attendance
             },
-            foreignKey: 'userId', //todo: maybe caused error, was before user_userid in the other model
-            // otherKey: 'user_userId',
-            // foreignKey: 'employeeId',
+            foreignKey: 'userId',
             constraints: false
         });
         User.hasMany(models.Comment, {
@@ -48,6 +43,9 @@ const user = (sequelize, DataTypes) => {
         });
         User.hasMany(models.Request_Day, {
             //todo same
+        });
+        User.hasMany(models.Tag, {
+            
         });
     };
     return User;

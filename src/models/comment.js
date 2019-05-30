@@ -1,4 +1,4 @@
-const comment = (sequelize, DataTypes) =>{
+const comment = (sequelize, DataTypes) => {
     const Comment = sequelize.define('comment', {
         Id: {
             type: DataTypes.UUID,
