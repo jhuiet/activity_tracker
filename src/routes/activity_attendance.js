@@ -12,7 +12,7 @@ router.get('/:attendanceId', async (req, res) => {
     return res.status(status.OK).json(attendee);
 });
 
-router.post('/', async (req, res) => {
+router.post('/', async (req, res, next) => {
     await req.context.models.Activity_Attendance.create({
         // id: req.body.id,
         userId: req.body.userId,
@@ -21,7 +21,19 @@ router.post('/', async (req, res) => {
         attendance: req.body.attendance
     }).then(() => {
         return res.status(status.CREATED).json(req.body);
-    });
+    }).catch(next);
 });
 
+router.put('/:activityId', async (req, res, next) => {
+    req.context.models.Activity_Attendance.update({
+        rsvp: req.body.rsvp,
+        attendance: req.body.attendance,
+    }, {
+        where: {
+            id: req.params.activityId
+        }
+    }).then(() => {
+        return res.status(status.OK).json(req.body);
+    })
+})
 export default router;
