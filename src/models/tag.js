@@ -1,9 +1,12 @@
 const tag = (sequelize, DataTypes) => {
     const Tag = sequelize.define('tag', {
-        Id: {
-            type: DataTypes.UUID,
-            defaultValue: DataTypes.UUIDV1,
+        id: {
+            type: DataTypes.INTEGER,
+            autoIncrement: true,
             primaryKey: true,
+            // type: DataTypes.UUID,
+            // defaultValue: DataTypes.UUIDV1,
+            // primaryKey: true,
         },
         // userId: {
         //     type: DataTypes.INTEGER,

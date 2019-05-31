@@ -26,9 +26,6 @@ const activity_attendance = (sequelize, DataTypes) => {
         }
     });
 
-    // Activity_Attendance.associate = models => {
-    //     Activity_Attendance.belongsTo(models.)
-    // }
     return Activity_Attendance;
 }
 
