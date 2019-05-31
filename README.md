@@ -20,3 +20,8 @@ https://www.robinwieruch.de/postgresql-express-node-rest-api/
 swagger:
 
 https://swagger.io/docs/specification/basic-structure/
+
+
+create api to update user points
+create api to modify if the user is enabled (able to access the app)
+## add a field to user: verified (set to false initially until a user updates
