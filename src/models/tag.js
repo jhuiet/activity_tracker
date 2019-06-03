@@ -18,9 +18,19 @@ const tag = (sequelize, DataTypes) => {
     });
 
     Tag.associate = models => {
-        Tag.belongsTo(models.User, {
-            //todo: other options
-        })
+        Tag.belongsToMany(models.User, {
+            through: {
+                model: models.User_Tag
+            },
+            foreignKey: 'tagId', 
+        });
+
+        Tag.belongsToMany(models.Activity, {
+            through: {
+                model: models.Activity_Tag
+            },
+            foreignKey: 'tagId', 
+        });
     }
     return Tag;
 }

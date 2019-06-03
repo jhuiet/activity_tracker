@@ -21,10 +21,10 @@ const activity = (sequelize, DataTypes) => {
             type: DataTypes.DATE,
             allowNull: false,
         },
-        recurring: {
-            type: DataTypes.BOOLEAN,
-            defaultValue: false,
-        },
+        // recurring: {
+        //     type: DataTypes.BOOLEAN,
+        //     defaultValue: false,
+        // },
         creator: {
             type: DataTypes.STRING(50),  //todo: create a fk restraint with user
             allowNull: false,
@@ -42,7 +42,15 @@ const activity = (sequelize, DataTypes) => {
                 model: models.Activity_Attendance
             },
             foreignKey: 'activityId', 
-        }); //onDelete: 'CASCADE'
+        });
+        Activity.belongsToMany(models.Tag, {
+            through: {
+                model: models.Activity_Tag
+            },
+            foreignKey: 'activityId', 
+        });
+        //onDelete: 'CASCADE'
+
 
     }
     return Activity;

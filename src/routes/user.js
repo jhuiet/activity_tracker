@@ -8,11 +8,12 @@ router.post('/', async (req, res) => {
     lastName: req.body.lastName,
     email: req.body.email,
     password: req.body.password,
-    points: req.body.points,
-    phoneNumbur: req.body.phoneNumber
+    // points: req.body.points,
+    // phoneNumbur: req.body.phoneNumber
   });
   return res.status(status.CREATED).json(user);
 });
+
 
 router.get('/', async (req, res) => {
   const users = await req.context.models.User.findAll();
@@ -35,8 +36,8 @@ router.put('/:userId', async (req, res, next) => {
   user.email = req.body.email;
   user.password = req.body.password;
   user.phoneNumbur = req.body.phoneNumber;
-  user.points = req.body.points;
-
+  user.role = req.body.role;
+  
   const updatedUser = await user.save();
   // await user.save().catch();
   res.status(status.OK).json(updatedUser);
@@ -60,3 +61,7 @@ router.delete('/:userId', async (req, res, next) => {
 // });
 
 export default router;
+
+
+
+//todo: API

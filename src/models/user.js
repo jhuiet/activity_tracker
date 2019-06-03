@@ -23,11 +23,16 @@ const user = (sequelize, DataTypes) => {
             type: DataTypes.STRING(250),
             allowNull: false,
         },
-        points: {
-            type: DataTypes.INTEGER,
+        // points: { // this is a computed value
+        //     type: DataTypes.INTEGER,
+        //     allowNull: false,
+        //     defaultValue: 0,
+        // },
+        role: {
+            type: DataTypes.STRING,
             allowNull: false,
-            defaultValue: 0,
-        },
+            defaultValue: "inactive" // or "user" or "admin"
+        }
     });
 
     User.associate = models => {
@@ -38,6 +43,12 @@ const user = (sequelize, DataTypes) => {
             foreignKey: 'userId',
             constraints: false
         });
+        User.belongsToMany(models.Tag, {
+            through: {
+                model: models.User_Tag
+            },
+            foreignKey: 'userId', 
+        });
         User.hasMany(models.Comment, {
             //todo: properties?
         });
@@ -46,6 +57,9 @@ const user = (sequelize, DataTypes) => {
         });
         User.hasMany(models.Tag, {
             
+        });
+        User.hasMany(models.Home_Day, {
+
         });
     };
     return User;
