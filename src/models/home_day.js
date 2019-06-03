@@ -9,7 +9,7 @@ const home_day = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             allowNull: false,
         },
-        date_requested: {
+        dateRequested: {
             type: DataTypes.DATE,
             allowNull: false,
         },

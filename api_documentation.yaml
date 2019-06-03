@@ -1,0 +1,1081 @@
+openapi: 3.0.0
+# Added by API Auto Mocking Plugin
+servers:
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/weAreWords/H.A.R.A.M.B.E/1.0.0
+info:
+  description: This api is used to track activities and users that interact with said activities
+  version: "1.0.0"
+  title: Activity Tracker API
+  contact:
+    email: huietj1@nku.eud
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+tags:
+  - name: users
+    description: calls based on users
+  - name: activities
+    description: calls based on activities
+  - name: user activity
+    description: calls involving activity attendance
+  - name: tags
+    description: calls based on tags
+  - name: home days
+    description: calls involving users working from home
+paths:
+  /users:
+    get:
+      tags:
+        - users
+      summary: returns all Users
+      operationId: getUsers
+      responses:
+        '200':
+          description: Users found in database
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+    post:
+      tags:
+        - users
+      summary: Create a User with form data
+      operationId: addUser
+      requestBody:
+         $ref: '#/components/requestBodies/UserCreate'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 12
+                  firstName:
+                    type: string
+                    example: "Jacob"
+                  lastName:
+                    type: string
+                    example: "Huiet"
+                  password:
+                    type: string
+                    example: "hashed password"
+                  
+                  status:
+                    type: string
+                    enum:
+                      - admin
+                      - user
+                      - inactive
+                    default: inactive
+                    example: "inactive"
+                  email:
+                    type: string
+                    example: ""
+                  phone:
+                    type: string
+                    example: ""
+                  createdAt:
+                    type: string
+                    example: '2019-05-31T17:21:55.302Z'
+                  updatedAt:
+                    type: string
+                    example: '2019-05-31T17:21:55.302Z'
+          description: User created
+        '400':
+          description: invalid input, User information invalid
+        '409':
+          description: That user already exists
+  /users/points:
+    get:
+      tags:
+        - users
+      summary: get the points for all users
+      operationId: getUsersPoints
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items: 
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    points:
+                      type: integer
+                example:
+                  - id: 1
+                    points: 3
+                  - id: 2
+                    points: 1
+                  - id: 3
+                    points: 0
+  /users/{userId}:
+    get:
+      tags:
+        - users
+      summary: Gets a user by ID.
+      operationId: getUserById
+      parameters:
+        - name: userId
+          in: path
+          description: User ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Invalid Id
+        '404':
+          description: User not found
+    put:
+      tags:
+        - users
+      summary: update a user based on id using form data
+      operationId: updateUserById
+      requestBody:
+        $ref: '#/components/requestBodies/UserUpdate'
+      parameters:
+        - name: userId
+          in: path
+          description: User ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '201':
+          description: User updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Invalid Id
+        '404':
+          description: User not found
+    delete:
+      tags:
+        - users
+      summary: Deletes a user
+      operationId: deleteUser
+      parameters:
+        - name: userId
+          in: path
+          description: User id to delete
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: user deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: User not found
+          
+  /users/homeDays:
+    get:
+      tags:
+        - home days
+      summary: Get all work from home days for all users
+      operationId: getHomeDays
+      responses:
+        '200':
+          description: Operation successful
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Home_Day'
+  /users/{userId}/homeDays:
+    parameters:
+        - name: userId
+          in: path
+          description: User ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+    get:
+      tags:
+        - home days
+      summary: Get all work from home days for a user
+      operationId: getHomeDaysByUser
+      responses:
+        '200':
+          description: Operation successful
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Home_Day'
+        '404':
+          description: User Id not found
+    post:
+      tags:
+        - home days
+      summary: Create a work from home day request for a user
+      operationId: postHomeDaysByUser
+      requestBody:
+        $ref: '#/components/requestBodies/HomeDayPost'
+      responses:
+        '200':
+          description: Operation successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Home_Day'
+        '400':
+          description: Invalid status entered
+        '404':
+          description: User Id not found
+    
+  /users/homeDays/{dayId}:
+    parameters:
+      # - name: userId
+      #   in: path
+      #   description: User ID
+      #   required: true
+      #   schema:
+      #     type: integer
+      #     format: int64
+      - name: dayId
+        in: path
+        description: Home Day ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+    put:
+      tags:
+        - home days
+      summary: Update a work from home day request for a user, altering the status.
+      operationId: putHomeDaysByUser
+      requestBody:
+        $ref: '#/components/requestBodies/HomeDayPut'
+      responses:
+        '200':
+          description: Operation successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Home_Day'
+        '400':
+          description: Invalid status entered
+        '404':
+          description: User Id not found
+  /activities:
+    get:
+      tags:
+        - activities
+      summary: Get an Array of activities
+      operationId: getActivities
+      responses:
+        '200':
+          description: Operation successful
+          content:
+            application/json:
+              schema:
+                type: array
+                items:                
+                  $ref: '#/components/schemas/Activity'
+    post:
+      tags:
+        - activities
+      summary: Create an activity with form data
+      operationId: postActivity
+      requestBody:
+        $ref: '#/components/requestBodies/ActivityCreateOrUpdate'
+      responses:
+        '200':
+          description: Activity Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Activity'
+        '400':
+          description: invalid input, Activity information invalid
+  /activities/{activityId}:
+    put:
+      tags:
+        - activities
+      summary: Update an activity with form data
+      operationId: putActivity
+      parameters:
+        - name: activityId
+          in: path
+          description: Activity ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        $ref: '#/components/requestBodies/ActivityCreateOrUpdate'
+      responses:
+        '200':
+          description: Activity Updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Activity'
+        '400':
+          description: Invalid activity information entered
+        '404':  
+          description: Activity not found
+    get:
+      tags:
+        - activities
+      summary: get an activity by Id
+      operationId: getActivityById
+      parameters:
+        - name: activityId
+          in: path
+          description: Activity ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Operation Successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Activity'
+        '400':
+          description: Invalid activity Id
+        '404':  
+          description: Activity not found
+    delete:
+      tags:
+        - activities
+      summary: delete an activity by Id
+      operationId: deleteActivity
+      parameters:
+        - name: activityId
+          in: path
+          description: Activity ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Activity Deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Activity'
+        '400':
+          description: Invalid activity Id
+        '404':  
+          description: Activity not found
+  
+  /Activity/{activityId}/Users:
+    parameters:
+      - name: activityId
+        in: path
+        description: Activity ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+    get:
+      tags:
+        - user activity
+      summary: Get users involved with an activity
+      operationId: getUsersAtActivity
+      responses:
+        '200':
+          description: Operation successful
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Activity_Attendance'
+        '404':
+          description: Invalid Activity Id
+  /Activity/{activityId}/User/{userId}:
+    parameters:
+      - name: activityId
+        in: path
+        description: Activity ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: userId
+        in: path
+        description: User ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+    get:
+      tags:
+        - user activity
+      summary: Get info about a user attending an Activity
+      operationId: getUserAtActivity
+      responses:
+        '200':
+          description: Operation successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Activity_Attendance'
+        '404':
+          description: Invalid Activity or User Id
+    post:
+      tags:
+        - user activity
+      summary: Set user status for an activity
+      operationId: postUserAtActivity
+      requestBody:
+        $ref: '#/components/requestBodies/ActivityAttendancePost'
+      responses:
+        '201':
+          description: Operation successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Activity_Attendance'
+        '400':
+          description: Invalid rsvp value entered. please enter yes, no, or maybe 
+        '404':
+          description: Invalid Activity or User Id
+    put:
+      tags:
+        - user activity
+      summary: Update user status and attendance for an activity
+      operationId: putUserAtActivity
+      requestBody:
+        $ref: '#/components/requestBodies/ActivityAttendancePut'
+      responses:
+        '200':
+          description: Operation successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Activity_Attendance'
+        '400':
+          description: Invalid values entered for rsvp or attendance
+        '404':
+          description: Invalid Activity or User Id
+    delete:
+      tags:
+        - user activity
+      summary: Delete user status and attendance for an activity
+      operationId: deleteUserAtActivity
+      responses:
+        '200':
+          description: Operation successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Activity_Attendance'
+        '404':
+          description: Invalid Activity or User Id
+  /tags:
+    get:
+      tags:
+        - tags
+      summary: Get all tags
+      operationId: getTags
+      responses:
+        '200':
+          description: Operation Successful
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Tag'
+    post:
+      tags:
+        - tags
+      summary: Create a tag
+      operationId: postTag
+      requestBody: 
+        $ref: '#/components/requestBodies/TagCreateOrUpdate'
+      responses:
+        '201':
+          description: Tag Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tag'
+        '400':
+          description: Invalid tag entered
+    
+  /tags/{tagId}:
+    get:
+      tags:
+        - tags
+      summary: Get a tag
+      operationId: getTag
+      parameters:
+        - name: tagId
+          in: path
+          description: Tag ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Tag Updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tag'
+        '404':
+          description: Invalid tag Id
+    put:
+      tags:
+        - tags
+      summary: Update a tag
+      operationId: putTag
+      parameters:
+        - name: tagId
+          in: path
+          description: Tag ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        $ref: '#/components/requestBodies/TagCreateOrUpdate'
+      responses:
+        '200':
+          description: Tag Updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tag'
+        '400':
+          description: Invalid tags
+        '404':
+          description: Invalid tag Id
+    delete:
+      tags:
+        - tags
+      summary: Delete a tag
+      operationId: deleteTag
+      parameters:
+        - name: tagId
+          in: path
+          description: Tag ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Tag Deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tag'
+        '404':
+          description: Invalid tag Id
+  /users/{userId}/tags:
+    parameters:
+      - name: userId
+        in: path
+        description: user ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+    get:
+      tags:
+        - users
+      summary: Get tags for a user
+      operationId: getUserTags
+      responses:
+        '200':
+          description: Operation successful
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Tag'
+        '404':
+          description: Invalid User Id
+    post:
+      tags:
+        - users
+      summary: Add tags for a user
+      operationId: postUserTags
+      requestBody:
+        $ref: '#/components/requestBodies/TagsPost'
+      responses:
+        '200':
+          description: Tags added
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Tags'
+        '400':
+          description: Invalid tags
+        '404':
+          description: Invalid User Id
+  /users/{userId}/tags/delete:
+    parameters:
+      - name: userId
+        in: path
+        description: user ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+    post:
+      tags:
+        - users
+      summary: Delete tags for a user
+      operationId: deleteUserTags
+      requestBody:
+        $ref: '#/components/requestBodies/TagsDelete'
+      responses:
+        '200':
+          description: Tags Deleted
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Tags'
+        '404':
+          description: Invalid User Id
+    # delete:
+    #   tags:
+    #     - users
+    #   summary: Delete tags for a user
+    #   operationId: deleteUserTags
+    #   requestBody:
+    #     $ref: '#/components/requestBodies/TagsDelete'
+    #   responses:
+    #     '200':
+    #       description: Tags Deleted
+    #       content:
+    #         application/json:
+    #           schema:
+    #               $ref: '#/components/schemas/Tags'
+    #     '400':
+    #       description: Invalid User Id
+  /activity/{activityId}/tags:
+    parameters:
+      - name: activityId
+        in: path
+        description: activity ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+    get:
+      tags:
+        - activities
+      summary: Get tags for an activity
+      operationId: getActivityTags
+      responses:
+        '200':
+          description: operation successful
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Tags'
+        '404':
+          description: Invalid activity Id
+    post:
+      tags: 
+        - activities
+      summary: Add tags to an activity
+      operationId: postActivityTags
+      requestBody:
+        $ref: '#/components/requestBodies/TagsPost'
+      responses:
+        '200':
+          description: Tags addded
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Tags'
+        '400':
+          description: Invalid tags
+        '404':
+          description: Invalid activity Id
+  /activity/{activityId}/tags/delete:
+    parameters:
+      - name: activityId
+        in: path
+        description: activity ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+    post:
+      tags:
+        - activities
+      summary: Delete tags for an activity
+      operationId: deleteActivityTags
+      requestBody:
+        $ref: '#/components/requestBodies/TagsDelete'
+      responses:
+        '200':
+          description: Tags Deleted
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Tag'
+        '400':
+          description: Invalid tag Id's
+        '404':
+          description: Invalid Activity Id
+    # delete:
+    #   tags:
+    #     - activities
+    #   summary: Delete tags for an activity
+    #   operationId: deleteUserTags
+    #   requestBody:
+    #     $ref: '#/components/requestBodies/TagsDelete'
+    #   responses:
+    #     '200':
+    #       description: Tags Deleted
+    #       content:
+    #         application/json:
+    #           schema:
+    #               $ref: '#/components/schemas/Tags'
+    #     '400':
+    #       description: Invalid User Id
+components:
+  requestBodies:
+    UserCreate:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              firstName:
+                type: string
+                example: "Jacob"
+              lastName:
+                type: string
+                example: "Huiet"
+              password:
+                type: string
+                example: "hashed password"
+              email:
+                type: string
+                example: "huietj1@gmail.com"
+    UserUpdate:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              firstName:
+                type: string
+                example: "Jacob"
+              lastName:
+                type: string
+                example: "Huiet"
+              password:
+                type: string
+                example: "hashed password"
+              email:
+                type: string
+                example: "huietj1@gmail.com"
+              status:
+                type: string
+                enum:
+                  - admin
+                  - user
+                  - inactive
+              phone:
+                type: string
+                example: "859-444-4444"
+    ActivityCreateOrUpdate:
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - name
+              - location
+              - dateTime
+              - creatorId
+            properties:
+              name:
+                type: string
+                example: "Ultimate Frisbee"
+              location:
+                type: string
+                default: 'Seven Hills Park Campus'
+              dateTime:
+                type: string
+                example: "2012-04-23T18:25:43.511Z"
+              creatorId:
+                type: integer
+                example: 1
+              givesPoints:
+                type: boolean
+                default: false
+              description:
+                type: string
+                example: "6v6 volleyball in front of the building."
+    TagCreateOrUpdate:
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - tag
+            properties:
+              tag:
+                type: string
+                example: "team sports"
+    ActivityAttendancePost:
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - rsvp
+            properties:
+              rsvp:
+                type: string
+                enum:
+                  - yes
+                  - no
+                  - maybe
+    ActivityAttendancePut:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              rsvp:
+                type: string
+                enum:
+                  - yes
+                  - no
+                  - maybe
+              attendance:
+                type: boolean
+    TagsPost:
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              type: string
+            example: ['fishing','sports','outdoors']
+    TagsDelete:
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              type: integer
+            example: [ 1, 2, 3 ]
+    HomeDayPost:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              userId:
+                type: string
+              dateRequested:
+                type: string
+              status:
+                type: string
+                enum:
+                  - pending
+                  - accepted
+                  - rejected
+                  - cancelled
+                default: pending
+    HomeDayPut:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              Id:
+                type: integer
+                example: 1
+              status:
+                type: string
+                example: 'accepted'
+                enum:
+                  - pending
+                  - accepted
+                  - rejected
+                  - cancelled
+    
+  schemas:
+    User:
+      type: object
+      required:
+        - firstName
+        - lastName
+        - password
+        - email
+      properties:
+        id:
+          type: integer
+          example: 12
+        firstName:
+          type: string
+          example: "Jacob"
+        lastName:
+          type: string
+          example: "Huiet"
+        password:
+          type: string
+          example: "hashed password"
+        email:
+          type: string
+          example: "huietj1@gmail.com"
+        status:
+          type: string
+          enum:
+            - admin
+            - user
+            - inactive
+          default: inactive
+        phone:
+          type: string
+          example: "859-444-4444"
+        createdAt:
+          type: string
+          example: '2019-05-31T17:21:55.302Z'
+        updatedAt:
+          type: string
+          example: '2019-06-31T17:22:55.302Z'
+          
+    Activity:
+      type: object
+      required:
+        - name
+        - location
+        - dateTime
+        - creatorId
+      properties:
+        id:
+          type: integer
+          example: 2
+        name:
+          type: string
+          example: "Ultimate Frisbee"
+        location:
+          type: string
+          default: 'Seven Hills Park Campus'
+        dateTime:
+          type: string
+          example: "2012-04-23T18:25:43.511Z"
+        creatorId:
+          type: integer
+          example: 1
+        givesPoints:
+          type: boolean
+          default: false
+        description:
+          type: string
+          example: "6v6 volleyball in front of the building."
+        updatedAt:
+          type: string
+          example: "2019-05-31T19:35:39.388Z"
+        createdAt:
+          type: string
+          example: "2019-05-31T19:35:39.388Z"
+    Tag:
+      type: object
+      required:
+        - tag
+      properties:
+        id:
+          type: integer
+          example: 1
+        tag:
+          type: string
+          example: 'sports'
+    Tags:
+      type: array
+      items:
+        $ref: '#/components/schemas/Tag'
+      example:
+        - id: 1
+          tag: 'fishing'
+        - id: 2
+          tag: 'sports'
+        - id: 3
+          tag: 'outdoors'
+    Activity_Attendance:
+      type: object
+      required:
+        - userId
+        - activityId
+        - rsvp
+      properties:
+        userId:
+          type: integer
+        activityId:
+          type: integer
+        rsvp:
+          type: string
+          enum:
+            - yes
+            - no
+            - maybe
+        attendance:
+          type: boolean
+          default: false
+    Home_Day:
+      type: object
+      required:
+        - id
+        - userId
+        - dateRequested
+        - status
+      properties:
+        id:
+          type: integer
+          example: 1
+        userId:
+          type: integer
+          example: 1
+        dateRequested:
+          type: string
+          example: '2012-04-23'
+        status:
+          type: string
+          enum:
+            - pending
+            - accepted
+            - rejected
+            - cancelled

@@ -8,9 +8,6 @@ const tag = (sequelize, DataTypes) => {
             // defaultValue: DataTypes.UUIDV1,
             // primaryKey: true,
         },
-        // userId: {
-        //     type: DataTypes.INTEGER,
-        // },
         tag: {
             type: String,
             allowNull: false
@@ -22,14 +19,14 @@ const tag = (sequelize, DataTypes) => {
             through: {
                 model: models.User_Tag
             },
-            foreignKey: 'tagId', 
+            foreignKey: 'tagId',
         });
 
         Tag.belongsToMany(models.Activity, {
             through: {
                 model: models.Activity_Tag
             },
-            foreignKey: 'tagId', 
+            foreignKey: 'tagId',
         });
     }
     return Tag;

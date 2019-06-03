@@ -1,12 +1,5 @@
 const activity_attendance = (sequelize, DataTypes) => {
     const Activity_Attendance = sequelize.define('activity_attendance', {
-        Id: {
-            type: DataTypes.INTEGER,
-            autoIncrement: true,
-            primaryKey: true
-            // type: DataTypes.UUID,
-            // defaultValue: DataTypes.UUIDV1,
-        },
         userId: {
             type: DataTypes.INTEGER,
             allowNull: false

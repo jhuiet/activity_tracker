@@ -8,7 +8,11 @@ import models, {
 import routes from './routes';
 
 const app = express();
+const swaggerUi = require('swagger-ui-express');
+const YAML = require('yamljs');
+const swaggerDocument = YAML.load('./api_documentation.yaml');
 
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.use(async (req, res, next) => {
     req.context = {
@@ -34,8 +38,7 @@ app.use('/tags', routes.tag);
 
 
 
-
-
+app.use(cors());
 
 
 var whitelist = ['http://example1.com', 'http://example2.com'];
