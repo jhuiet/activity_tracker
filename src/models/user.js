@@ -15,6 +15,7 @@ const user = (sequelize, DataTypes) => {
         },
         email: {
             type: DataTypes.STRING(50),
+            isEmail: true
         },
         phoneNumber: {
             type: DataTypes.STRING(13)

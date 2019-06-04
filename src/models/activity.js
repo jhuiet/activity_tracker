@@ -21,10 +21,6 @@ const activity = (sequelize, DataTypes) => {
             type: DataTypes.DATE,
             allowNull: false,
         },
-        // recurring: {
-        //     type: DataTypes.BOOLEAN,
-        //     defaultValue: false,
-        // },
         creator: {
             type: DataTypes.STRING(50),  //todo: create a fk restraint with user
             allowNull: false,
