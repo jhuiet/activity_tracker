@@ -1,20 +1,25 @@
 import { Router } from 'express';
+import validator from 'validator';
 const status = require('http-status');
 const router = Router();
 
 
 router.post('/', async (req, res) => {
-    const activity = await req.context.models.Activity.create({
-        // id: req.body.id,
-        name: req.body.name,
-        location: req.body.location,
-        description: req.body.description,
-        dateTime: req.body.dateTime,
-        recurring: req.body.recurring,
-        creator: req.body.creator,
-        givesPoints: req.body.givesPoints
-    });
-    return res.status(status.CREATED).json(activity);
+    return validateActivityPost( req )
+        .then( validated => {
+            if( validated ) return Promise.reject( validated );
+            const activityDescription = req.body.description || "";
+            return req.context.models.Activity.create({
+                name: req.body.name,
+                location: req.body.location,
+                description: activityDescription,
+                dateTime: req.body.dateTime,
+                creator: req.body.creator,
+            })
+        }).then( activity => {
+            if( !activity ) Promise.reject( 'Error creating user in database' );
+            return res.status(status.CREATED).json(activity);
+        }).catch( err =>  res.status(status.BAD_REQUEST).json(err))
 });
 
 
@@ -53,5 +58,25 @@ router.delete('/:activityId', async (req, res) => {
     return res.status(status.OK).json(activity);
 });
 
+function validateActivityPost( req ) {
+    return Promise.resolve(syncvalidateActivityPost( req ));
+}
+
+function syncvalidateActivityPost( req ) {
+    if( !req.body.name || !validator.isAlphanumeric( req.body.name )) return "Invalid activity name";
+    if( !req.body.location || !validator.isLength(req.body.location, 6) ) return "Invalid activity location";
+    // if( req.body.description ) { //todo: errer check description??
+    //     if( req.body.description)
+    // }
+    // const activityDate = validator.toDate(req.body.dateTime);
+    if( !req.body.dateTime || validator.isBefore(req.body.dateTime.toString(), new Date().toString())  ) return "Invalid activity date";
+
+    return( req.context.models.User.findByPk( req.body.creator )
+        .then(model => {
+            if(!model) return "Invalid creator Id"
+            return "";
+        })
+     );
+};
 
 export default router;
