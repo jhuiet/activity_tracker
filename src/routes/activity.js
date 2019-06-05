@@ -6,9 +6,9 @@ const router = Router();
 
 router.post('/', async (req, res) => {
     return validateActivityPost( req )
-        .then( validated => {
-            if( validated ) return Promise.reject( validated );
-            const activityDescription = req.body.description || "";
+        .then( errMessage => {
+            if( errMessage ) return Promise.reject( errMessage );
+            const activityDescription = req.body.description || "";         //create an activity based on the body
             return req.context.models.Activity.create({
                 name: req.body.name,
                 location: req.body.location,
@@ -17,7 +17,7 @@ router.post('/', async (req, res) => {
                 creator: req.body.creator,
             })
         }).then( activity => {
-            if( !activity ) Promise.reject( 'Error creating user in database' );
+            if( !activity ) Promise.reject( 'Error creating user in database' );    //error if activity was not created successfuly
             return res.status(status.CREATED).json(activity);
         }).catch( err =>  res.status(status.BAD_REQUEST).json(err))
 });
@@ -35,6 +35,11 @@ router.get('/:activityId', async (req, res) => {
 
 
 router.put('/:activityId', async (req, res) => {
+    return validateActivityPut( req )
+        .then( errMessage => {
+            if( errMessage ) Promise.reject( errMessage );
+            const activityDescription = req.body.description || "";
+        })
     const activity = await req.context.models.Activity.findByPk(req.params.activityId);
     if (!activity) {
         throw new Error('activity not found in database');
@@ -58,6 +63,25 @@ router.delete('/:activityId', async (req, res) => {
     return res.status(status.OK).json(activity);
 });
 
+
+function validateActivityPut( req ) {
+    return Promise.resolve(syncvalidateActivityPut( req ));
+}
+
+function syncvalidateActivityPut( req ) {
+    if( !req.body.name || !validator.isAlphanumeric( req.body.name )) return "Invalid activity name";
+    if( !req.body.location || !validator.isLength(req.body.location, 6) ) return "Invalid activity location";
+    // if( req.body.description ) { //todo: errer check description??
+    if( !req.body.dateTime || validator.isBefore(req.body.dateTime.toString(), new Date().toString()) ) return "Invalid activity date";
+    if( !req.body.givesPoints || !validator.isBoolean(req.body.givesPoints) ) return "Invalid activity givesPoints"
+    return( req.context.models.User.findByPk( req.body.creator )
+    .then(model => {
+        if(!model) return "Invalid creator Id"
+        return "";
+    })
+ );
+    }
+
 function validateActivityPost( req ) {
     return Promise.resolve(syncvalidateActivityPost( req ));
 }
@@ -66,9 +90,6 @@ function syncvalidateActivityPost( req ) {
     if( !req.body.name || !validator.isAlphanumeric( req.body.name )) return "Invalid activity name";
     if( !req.body.location || !validator.isLength(req.body.location, 6) ) return "Invalid activity location";
     // if( req.body.description ) { //todo: errer check description??
-    //     if( req.body.description)
-    // }
-    // const activityDate = validator.toDate(req.body.dateTime);
     if( !req.body.dateTime || validator.isBefore(req.body.dateTime.toString(), new Date().toString())  ) return "Invalid activity date";
 
     return( req.context.models.User.findByPk( req.body.creator )
