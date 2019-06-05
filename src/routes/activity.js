@@ -6,8 +6,7 @@ const router = Router();
 
 router.post('/', async (req, res) => {
     return validateActivityPost( req )
-        .then( errMessage => {
-            if( errMessage ) return Promise.reject( errMessage );
+        .then( () => {
             const activityDescription = req.body.description || "";         //create an activity based on the body
             return req.context.models.Activity.create({
                 name: req.body.name,
@@ -64,38 +63,38 @@ router.delete('/:activityId', async (req, res) => {
 });
 
 
-function validateActivityPut( req ) {
-    return Promise.resolve(syncvalidateActivityPut( req ));
-}
+// function validateActivityPut( req ) {
+//     return Promise.resolve(syncvalidateActivityPut( req ));
+// }
 
-function syncvalidateActivityPut( req ) {
-    if( !req.body.name || !validator.isAlphanumeric( req.body.name )) return "Invalid activity name";
-    if( !req.body.location || !validator.isLength(req.body.location, 6) ) return "Invalid activity location";
+function validateActivityPut( req ) {
+    if( !req.body.name || !validator.isAlphanumeric( req.body.name )) return Promise.reject("Invalid activity name");
+    if( !req.body.location || !validator.isLength(req.body.location, 6) ) return Promise.reject("Invalid activity location");
     // if( req.body.description ) { //todo: errer check description??
-    if( !req.body.dateTime || validator.isBefore(req.body.dateTime.toString(), new Date().toString()) ) return "Invalid activity date";
-    if( !req.body.givesPoints || !validator.isBoolean(req.body.givesPoints) ) return "Invalid activity givesPoints"
+    if( !req.body.dateTime || validator.isBefore(req.body.dateTime.toString(), new Date().toString()) ) return Promise.reject("Invalid activity date");
+    if( !req.body.givesPoints || !validator.isBoolean(req.body.givesPoints) ) return Promise.reject("Invalid activity givesPoints");
     return( req.context.models.User.findByPk( req.body.creator )
     .then(model => {
-        if(!model) return "Invalid creator Id"
-        return "";
+        if(!model) return Promise.reject("Invalid creator Id");
+        return Promise.resolve();
     })
  );
     }
 
-function validateActivityPost( req ) {
-    return Promise.resolve(syncvalidateActivityPost( req ));
-}
+// function validateActivityPost( req ) {
+//     return Promise.resolve(syncvalidateActivityPost( req ));
+// }
 
-function syncvalidateActivityPost( req ) {
-    if( !req.body.name || !validator.isAlphanumeric( req.body.name )) return "Invalid activity name";
-    if( !req.body.location || !validator.isLength(req.body.location, 6) ) return "Invalid activity location";
+function validateActivityPost( req ) {
+    if( !req.body.name || !validator.isAlphanumeric( req.body.name )) return Promise.reject("Invalid activity name");
+    if( !req.body.location || !validator.isLength(req.body.location, 6) ) return Promise.reject("Invalid activity location");
     // if( req.body.description ) { //todo: errer check description??
-    if( !req.body.dateTime || validator.isBefore(req.body.dateTime.toString(), new Date().toString())  ) return "Invalid activity date";
+    if( !req.body.dateTime || validator.isBefore(req.body.dateTime.toString(), new Date().toString())  ) return Promise.reject("Invalid activity date");
 
     return( req.context.models.User.findByPk( req.body.creator )
         .then(model => {
-            if(!model) return "Invalid creator Id"
-            return "";
+            if(!model) return Promise.reject("Invalid creator Id");
+            return Promise.resolve();
         })
      );
 };

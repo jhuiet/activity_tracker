@@ -1,8 +1,10 @@
 import { Router } from 'express';
 import validator from 'validator';
+import Sequelize from 'sequelize';
 import { promises } from 'fs';
 const status = require('http-status');
 const router = Router();
+const Op = Sequelize.Op;
 const userRoles = {
   inactive: 'inactive',
   user: 'user',
@@ -121,7 +123,19 @@ function validateUserPut(req) {
   return req.context.models.User.findByPk(req.params.userId).then(model => {
     if (!model) return Promise.reject('User not found in database');
     Promise.resolve();
-  });
+  }).then(() => {
+    return req.context.models.User.findOne({
+    where: { 
+      id: {
+        [Op.ne]: req.params.userId
+      },
+      email: req.body.email 
+    }
+    }).then(model => {
+        if (model) return Promise.reject('This email is already in use');
+        Promise.resolve();
+      });
+    });
 }
 // router.get('/:userId/points', async (req, res) => {
 //   const user = await req.context.models.User.findByPk(req.params.userId);
