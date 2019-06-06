@@ -51,6 +51,7 @@ router.get('/points', async (req, res) => {
 
 router.put('/:userId', async (req, res, next) => {
   return validateUserPut(req)
+      //todo: add regex .matches instead of alphanumeric and anything else with spaces
     .then(() => {
       return req.context.models.User.findByPk(req.params.userId).then(user => {
         user.firstName = req.body.firstName;
@@ -60,12 +61,12 @@ router.put('/:userId', async (req, res, next) => {
         if (req.body.phoneNumber) user.phoneNumber = req.body.phoneNumber;
         user.role = req.body.role;
         return user.save().catch(err => {
-          throw new Error(`could not update the database at this time: ${err}`);
+          Promise.reject(`could not update the database at this time: ${err}`);
         });
       });
     })
-    .then(user => {
-      return res.status(status.OK).json(user);
+    .then(updatedUser => {
+      return res.status(status.OK).json(updatedUser);
     })
     .catch(validationError =>
       res.status(status.BAD_REQUEST).json(validationError)
