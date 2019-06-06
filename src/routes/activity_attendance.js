@@ -1,8 +1,14 @@
 import { Router } from 'express';
 const status = require('http-status');
 const router = Router();
+const rsvp = {
+  yes: "yes",
+  no: "no",
+  maybe: "maybe"
+}
 
-router.post('/', async (req, res, next) => {
+router.post('/:activityId/user/:userId', async (req, res, next) => {
+  validateAttendancePost( req );
   await req.context.models.Activity_Attendance.create({
     // id: req.body.id, //auto incremented
     userId: req.body.userId,
@@ -49,5 +55,19 @@ router.delete('/:attendanceId', async (req, res) => {
   );
   return res.status(status.OK).json(activityAttendance);
 });
+
+function validateAttendancePost( req ) {
+  if( !req.body.rsvp || !rsvp[req.body.rsvp])
+    return Promise.reject('Invalid Rsvp value entered');
+  return req.context.Activity.findByPk(req.params.activityId).then(model => {
+    if (!model) return Promise.reject('Activity not found in database')
+    return Promise.resolve()
+    }).then(() => {
+      req.context.User.findByPk(req.params.userId).then(model => {
+        if (!model) return Promise.reject('User not found in database')
+        return Promise.resolve()
+      })
+    });
+  }
 
 export default router;
