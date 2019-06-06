@@ -304,7 +304,7 @@ paths:
       summary: Create an activity with form data
       operationId: postActivity
       requestBody:
-        $ref: '#/components/requestBodies/ActivityCreateOrUpdate'
+        $ref: '#/components/requestBodies/ActivityCreate'
       responses:
         '200':
           description: Activity Created
@@ -313,7 +313,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Activity'
         '400':
-          '[custom error message]'
+          description: '[custom error message]'
   /activities/{activityId}:
     put:
       tags:
@@ -329,7 +329,7 @@ paths:
             type: integer
             format: int64
       requestBody:
-        $ref: '#/components/requestBodies/ActivityCreateOrUpdate'
+        $ref: '#/components/requestBodies/ActivityUpdate'
       responses:
         '200':
           description: Activity Updated
@@ -887,7 +887,7 @@ components:
               phone:
                 type: string
                 example: "859-444-4444"
-    ActivityCreateOrUpdate:
+    ActivityCreate:
       content:
         application/json:
           schema:
@@ -916,6 +916,40 @@ components:
               description:
                 type: string
                 example: "6v6 volleyball in front of the building."
+
+    ActivityUpdate:
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - name
+              - location
+              - dateTime
+              - creatorId
+              - cancelled
+            properties:
+              name:
+                type: string
+                example: "Ultimate Frisbee"
+              location:
+                type: string
+                default: 'Seven Hills Park Campus'
+              dateTime:
+                type: string
+                example: "2012-04-23T18:25:43.511Z"
+              creatorId:
+                type: integer
+                example: 1
+              givesPoints:
+                type: boolean
+                default: false
+              description:
+                type: string
+                example: "6v6 volleyball in front of the building."
+              cancelled:
+                type: boolean
+                default: false
     TagCreateOrUpdate:
       content:
         application/json:
@@ -1103,6 +1137,9 @@ components:
         description:
           type: string
           example: "6v6 volleyball in front of the building."
+        cancelled:
+          type: boolean
+          default: false
         updatedAt:
           type: string
           example: "2019-05-31T19:35:39.388Z"

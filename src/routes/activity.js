@@ -45,6 +45,7 @@ router.put('/:activityId', async (req, res) => {
           activity.dateTime = req.body.dateTime;
           activity.creatorId = req.body.creatorId;
           activity.givesPoints = req.body.givesPoints;
+          activity.cancelled = req.body.cancelled;
           return activity.save().catch(err => {
             Promise.reject('Could not save activity to the database');
           });
@@ -82,18 +83,19 @@ router.delete('/:activityId', async (req, res) => {
 
 function validateActivityPut(req) {
   // if( req.body.description ) { //todo: errer check description??
-  //todo: add regex .matches instead of alphanumeric and anything else with spaces
 
   if (!req.body.name || req.body.name.match(/^[\w\-\s]+$/) === null)
     return Promise.reject('Invalid activity name');
   if (!req.body.location || !validator.isLength(req.body.location, 6))
     return Promise.reject('Invalid activity location');
+  if (req.body.cancelled == null || typeof req.body.cancelled !== "boolean")
+    return Promise.reject('Invalid activity cancelled property');
   if (
     !req.body.dateTime || !Date.parse(req.body.dateTime) ||
     validator.isBefore(req.body.dateTime.toString(), new Date().toString())
   )
     return Promise.reject('Invalid activity date');
-  if (!!req.body.givesPoints || typeof req.body.givesPoints !== "boolean")
+  if (req.body.givesPoints == null || typeof req.body.givesPoints !== "boolean")
     return Promise.reject('Invalid activity givesPoints');
   return req.context.models.User.findByPk(req.body.creatorId).then(model => {
     if (!model) return Promise.reject('Invalid creator Id');
@@ -118,7 +120,7 @@ function validateActivityPost(req) {
   if (!req.body.location || !validator.isLength(req.body.location, 6))
     return Promise.reject('Invalid activity location');
   if (
-    !req.body.dateTime ||
+    !req.body.dateTime || !Date.parse(req.body.dateTime) ||
     validator.isBefore(req.body.dateTime.toString(), new Date().toString())
   )
     return Promise.reject('Invalid activity date');

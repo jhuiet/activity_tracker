@@ -29,6 +29,11 @@ const activity = (sequelize, DataTypes) => {
             type: DataTypes.BOOLEAN,
             defaultValue: false,
             allowNull: false,
+        },
+        cancelled: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: false,
+            allowNull: false
         }
     });
 
@@ -46,7 +51,9 @@ const activity = (sequelize, DataTypes) => {
             },
             foreignKey: 'activityId',
         });
-        Activity.belongsTo(models.User);
+        Activity.belongsTo(models.User, {
+            foreignKey: 'creatorId'
+        });
         //onDelete: 'CASCADE'
 
 

@@ -31,8 +31,7 @@ Create a User with form data
 | Code | Description |
 | ---- | ----------- |
 | 201 | User created |
-| 400 | invalid input, User information invalid |
-| 409 | That user already exists |
+| 400 | Err: [custom error message] |
 
 ### /users/points
 
@@ -84,8 +83,7 @@ update a user based on id using form data
 | Code | Description |
 | ---- | ----------- |
 | 201 | User updated |
-| 400 | Invalid Id |
-| 404 | User not found |
+| 400 | [custom error message] |
 
 #### DELETE
 ##### Summary:
@@ -103,8 +101,7 @@ Deletes a user
 | Code | Description |
 | ---- | ----------- |
 | 200 | user deleted |
-| 400 | Invalid ID supplied |
-| 404 | User not found |
+| 400 | User Id not found in database |
 
 ### /users/homeDays
 
@@ -202,7 +199,7 @@ Create an activity with form data
 | Code | Description |
 | ---- | ----------- |
 | 200 | Activity Created |
-| 400 | invalid input, Activity information invalid |
+| 400 | [custom error message] |
 
 ### /activities/{activityId}
 
@@ -222,8 +219,7 @@ Update an activity with form data
 | Code | Description |
 | ---- | ----------- |
 | 200 | Activity Updated |
-| 400 | Invalid activity information entered |
-| 404 | Activity not found |
+| 400 | [custom error message] |
 
 #### GET
 ##### Summary:
@@ -260,10 +256,9 @@ delete an activity by Id
 | Code | Description |
 | ---- | ----------- |
 | 200 | Activity Deleted |
-| 400 | Invalid activity Id |
-| 404 | Activity not found |
+| 400 | Activity Id not found in database |
 
-### /Activity/{activityId}/Users
+### /activities/{activityId}/Users
 
 #### GET
 ##### Summary:
@@ -283,7 +278,7 @@ Get users involved with an activity
 | 200 | Operation successful |
 | 404 | Invalid Activity Id |
 
-### /Activity/{activityId}/User/{userId}
+### /activites/{activityId}/User/{userId}
 
 #### GET
 ##### Summary:
@@ -504,7 +499,7 @@ Delete tags for a user
 | 200 | Tags Deleted |
 | 404 | Invalid User Id |
 
-### /activity/{activityId}/tags
+### /activities/{activityId}/tags
 
 #### GET
 ##### Summary:
@@ -543,7 +538,7 @@ Add tags to an activity
 | 400 | Invalid tags |
 | 404 | Invalid activity Id |
 
-### /activity/{activityId}/tags/delete
+### /activities/{activityId}/tags/delete
 
 #### POST
 ##### Summary:
@@ -563,3 +558,64 @@ Delete tags for an activity
 | 200 | Tags Deleted |
 | 400 | Invalid tag Id's |
 | 404 | Invalid Activity Id |
+
+### /activities/{activityId}/comments
+
+#### GET
+##### Parameters
+
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ---- |
+| activityId | path | Activity Id | Yes | long |
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200 | Operation successful |
+
+#### POST
+##### Parameters
+
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ---- |
+| activityId | path | Activity Id | Yes | long |
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 201 | Comment Created |
+| 400 | invalid comment |
+| 404 | invalid activity id |
+
+### /comments/{commentId}
+
+#### PUT
+##### Parameters
+
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ---- |
+| commentId | path | Comment Id | Yes | long |
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200 | Comment Updated |
+| 400 | invalid comment |
+| 404 | invalid comment Id |
+
+#### DELETE
+##### Parameters
+
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ---- |
+| commentId | path | Comment Id | Yes | long |
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200 | Comment deleted |
+| 404 | invalid comment Id |

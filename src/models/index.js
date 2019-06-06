@@ -17,7 +17,6 @@ const sequelize = new Sequelize({
 
 
 const models = {
-    Activity_Attendance: sequelize.import('./activity_attendance'),
     User_Tag: sequelize.import('./user_tag'),
     Activity_Tag: sequelize.import('./activity_tag'),
     User: sequelize.import('./user'),
@@ -26,6 +25,8 @@ const models = {
     Request_Day: sequelize.import('./request_day'),
     Tag: sequelize.import('./tag'),
     Home_Day: sequelize.import('./home_day'),
+    Activity_Attendance: sequelize.import('./activity_attendance'),
+
 };
 
 //call the associate method of each model, building db relations.

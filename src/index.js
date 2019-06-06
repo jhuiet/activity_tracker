@@ -6,8 +6,9 @@ import models, {
     sequelize
 } from './models';
 import routes from './routes';
-
 const app = express();
+app.use(cors());
+
 const swaggerUi = require('swagger-ui-express');
 const YAML = require('yamljs');
 const swaggerDocument = YAML.load('./api_documentation.yaml');
@@ -38,7 +39,7 @@ app.use('/tags', routes.tag);
 
 
 
-app.use(cors());
+
 
 
 var whitelist = ['http://example1.com', 'http://example2.com'];
