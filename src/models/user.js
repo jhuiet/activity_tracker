@@ -37,7 +37,8 @@ const user = (sequelize, DataTypes) => {
                 model: models.Activity_Attendance
             },
             foreignKey: 'userId',
-            constraints: false
+            otherKey: 'activityId',
+            // constraints: false
         });
         User.belongsToMany(models.Tag, {
             through: {
@@ -56,6 +57,9 @@ const user = (sequelize, DataTypes) => {
         });
         User.hasMany(models.Home_Day, {
 
+        });
+        User.hasMany(models.Activity, {
+            foreignKey: 'creatorId'
         });
     };
     return User;

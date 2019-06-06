@@ -1,7 +1,6 @@
 import { Router } from 'express';
 import validator from 'validator';
 import Sequelize from 'sequelize';
-import { promises } from 'fs';
 const status = require('http-status');
 const router = Router();
 const Op = Sequelize.Op;
@@ -126,11 +125,11 @@ function validateUserPut(req) {
     Promise.resolve();
   }).then(() => {
     return req.context.models.User.findOne({
-    where: { 
+    where: {
       id: {
         [Op.ne]: req.params.userId
       },
-      email: req.body.email 
+      email: req.body.email
     }
     }).then(model => {
         if (model) return Promise.reject('This email is already in use');
@@ -145,4 +144,4 @@ function validateUserPut(req) {
 
 export default router;
 
-//todo: API
+
