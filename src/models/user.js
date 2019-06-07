@@ -64,7 +64,7 @@ const user = (sequelize, DataTypes) => {
             foreignKey: 'creatorId'         //when I defined this in both it set it to delete and update cascade. when I removed it here it only
         });                                 //had update cascade (on delete no action). when I removed it from the activity table It no longer
     };                                      //used creatorId as the FK and instead made a column named userId.
-    return User;
+    return User;                            //do we want this:? if user is deleted then the activities they created will be deleted. if not remove here or set onDelete: SET NULL
 };
 
 export default user;

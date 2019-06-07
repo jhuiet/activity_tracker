@@ -2,24 +2,29 @@ import { Router } from 'express';
 const status = require('http-status');
 const router = Router();
 const rsvp = {
-  yes: "yes",
-  no: "no",
-  maybe: "maybe"
-}
+  yes: 'yes',
+  no: 'no',
+  maybe: 'maybe',
+};
 
-router.post('/:activityId/user/:userId', async (req, res, next) => {
-  validateAttendancePost( req );
-  await req.context.models.Activity_Attendance.create({
-    // id: req.body.id, //auto incremented
-    userId: req.body.userId,
-    activityId: req.body.activityId,
-    rsvp: req.body.activityId,
-    attendance: req.body.attendance
-  })
-    .then(() => {
-      return res.status(status.CREATED).json(req.body);
+router.post('/:activityId/users/:userId', async (req, res, next) => {
+  return validateAttendancePost(req).then(() => {
+    req.context.models.Activity_Attendance.create({
+      userId: req.params.userId,
+      activityId: req.params.activityId,
+      rsvp: req.body.rsvp,
     })
-    .catch(next);
+      .then(model => {
+        if (!model)
+          Promise.reject(
+            'Error creating activity Attendance association in database'
+          );
+        return res.status(status.CREATED).json(model);
+      })
+      .catch(err => {
+        return res.status(status.BAD_REQUEST).json(err)
+      });
+  });
 });
 
 router.get('/', async (req, res) => {
@@ -49,25 +54,27 @@ router.delete('/:attendanceId', async (req, res) => {
   const activityAttendance = await req.context.models.Activity_Attendance.destroy(
     {
       where: {
-        id: req.params.attendanceId
-      }
+        id: req.params.attendanceId,
+      },
     }
   );
   return res.status(status.OK).json(activityAttendance);
 });
 
-function validateAttendancePost( req ) {
-  if( !req.body.rsvp || !rsvp[req.body.rsvp])
+function validateAttendancePost(req) {
+  if (!req.body.rsvp || !rsvp[req.body.rsvp])
     return Promise.reject('Invalid Rsvp value entered');
-  return req.context.Activity.findByPk(req.params.activityId).then(model => {
-    if (!model) return Promise.reject('Activity not found in database')
-    return Promise.resolve()
-    }).then(() => {
+  return req.context.Activity.findByPk(req.params.activityId)
+    .then(model => {
+      if (!model) return Promise.reject('Activity not found in database');
+      return Promise.resolve();
+    })
+    .then(() => {
       req.context.User.findByPk(req.params.userId).then(model => {
-        if (!model) return Promise.reject('User not found in database')
-        return Promise.resolve()
-      })
+        if (!model) return Promise.reject('User not found in database');
+        return Promise.resolve();
+      });
     });
-  }
+}
 
 export default router;

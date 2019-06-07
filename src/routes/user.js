@@ -36,8 +36,10 @@ router.get('/', async (req, res) => {
 });
 
 router.get('/:userId', async (req, res) => {
-  const user = await req.context.models.User.findByPk(req.params.userId);
-  return res.status(status.OK).json(user);
+  return req.context.models.User.findByPk(req.params.userId).then( user => {
+    if(!user) return res.status(status.BAD_REQUEST).json('Invalid user id');
+    return res.status(status.CREATED).json(user);
+  });
 });
 
 //todo: finish once done with workfromhomedays and activity_attendance
@@ -67,8 +69,9 @@ router.put('/:userId', async (req, res, next) => {
     .then(updatedUser => {
       return res.status(status.OK).json(updatedUser);
     })
-    .catch(validationError =>
-      res.status(status.BAD_REQUEST).json(validationError)
+    .catch(validationError => {
+      return res.status(status.BAD_REQUEST).json(validationError)
+    }
     );
 });
 

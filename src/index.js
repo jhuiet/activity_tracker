@@ -28,7 +28,7 @@ app.use(bodyParser.urlencoded({
     extended: true
 }));
 
-app.use('/activity_attendance', routes.activity_attendance);
+// app.use('/activity_attendance', routes.activity_attendance); //use activities to deal with these
 app.use('/users', routes.user);
 // app.use('/activity_tag', routes.activity_tag);
 // app.use('/user_tag', routes.user_tag);
