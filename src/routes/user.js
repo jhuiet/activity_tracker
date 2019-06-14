@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import validator from 'validator';
 import Sequelize from 'sequelize';
+import { authentication, Authenticator } from '../authentication/passwords';
 const status = require('http-status');
 const router = Router();
 const Op = Sequelize.Op;
@@ -13,11 +14,12 @@ const userRoles = {
 router.post('/', async (req, res) => {
   return validateUserPost(req)
     .then(() => {
+      hashedPassword = Authenticator.hashPass(req.body.password);
       return req.context.models.User.create({
         firstName: req.body.firstName,
         lastName: req.body.lastName,
         email: req.body.email,
-        password: req.body.password
+        password: hashedPassword
       });
     })
     .then(user => {
@@ -93,7 +95,7 @@ router.delete('/:userId', async (req, res, next) => {
 });
 
 function validateUserPost(req) {
-  if (!req.body.password) return Promise.reject('Invalid password entered');
+  if (!req.body.password || req.body.password.length < 6 ) return Promise.reject('Invalid password entered');
   if (!req.body.email || !validator.isEmail(req.body.email))
     return Promise.reject('Invalid email entered');
   if (!req.body.firstName || !validator.isAlpha(req.body.firstName))
