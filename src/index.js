@@ -66,6 +66,7 @@ app.get('/products/:id', cors(corsOptions), function (req, res, next) {
         msg: 'This is CORS-enabled for only example.com.'
     })
 });
+
 //todo: look into implementing migration instead of synch.
 
 sequelize.sync().then(() => {

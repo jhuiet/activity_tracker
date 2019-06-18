@@ -29,7 +29,6 @@ router.post('/', async (req, res) => {
     .catch(validationError =>
       res.status(status.BAD_REQUEST).json(validationError)
     );
-  //todo: validate password
 });
 
 router.get('/', async (req, res) => {
@@ -95,7 +94,8 @@ router.delete('/:userId', async (req, res, next) => {
 });
 
 function validateUserPost(req) {
-  if (!req.body.password || req.body.password.length < 6 ) return Promise.reject('Invalid password entered');
+  const passRegex = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})");
+  if (!req.body.password || !passRegex.test(req.body.password) ) return Promise.reject('Password must be at least 8 characters, and contain a number, uppercase, and lowercase value');
   if (!req.body.email || !validator.isEmail(req.body.email))
     return Promise.reject('Invalid email entered');
   if (!req.body.firstName || !validator.isAlpha(req.body.firstName))

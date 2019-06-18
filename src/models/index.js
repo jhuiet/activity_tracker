@@ -1,5 +1,19 @@
 import Sequelize from 'sequelize';
 
+
+/*
+This file collects all the models, calls their association based methods, and creates a database
+exports: models and database.
+*/
+
+//create the database in ./testDb
+const sequelize = new Sequelize({
+    dialect: 'sqlite',
+    storage: './testDb'
+});
+
+
+//postgres database alternative
 // const sequelize = new Sequelize(
 //     process.env.DATABASE,
 //     process.env.DATABASE_USERNAME,
@@ -8,12 +22,6 @@ import Sequelize from 'sequelize';
 //         dialect: 'postgres',
 //     },
 // );
-
-const sequelize = new Sequelize({
-    dialect: 'sqlite',
-    storage: './testDb'
-  });
-
 
 
 const models = {
@@ -36,6 +44,9 @@ Object.keys(models).forEach(key => {
     }
 });
 
-export { sequelize };
+//database
+export {
+    sequelize
+};
 
 export default models;

@@ -1,5 +1,7 @@
 var bcrypt = require('bcryptjs');
 
+
+
 export class Authenticator {
   static hashPass(password) {
     var salt = bcrypt.genSaltSync(10);
