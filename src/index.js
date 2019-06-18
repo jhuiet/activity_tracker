@@ -6,15 +6,17 @@ import models, {
     sequelize
 } from './models';
 import routes from './routes';
-const app = express();
-app.use(cors());
 
+const app = express();
+
+const cookieParser = require('cookie-parser')
 const swaggerUi = require('swagger-ui-express');
 const YAML = require('yamljs');
 const swaggerDocument = YAML.load('./api_documentation.yaml');
 
+app.use(cors());
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
-
+//add models to req.context.models variable
 app.use(async (req, res, next) => {
     req.context = {
         models,
@@ -22,18 +24,21 @@ app.use(async (req, res, next) => {
     next();
 });
 
-
+app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: true
 }));
 
-// app.use('/activity_attendance', routes.activity_attendance); //use activities to deal with these
+
 app.use('/users', routes.user);
 // app.use('/activity_tag', routes.activity_tag);
 // app.use('/user_tag', routes.user_tag);
 app.use('/activities', routes.activity);
+app.use('/activity_attendance', routes.activity_attendance); //use activities to deal with these
+app.use('/login', routes.login);
 app.use('/tags', routes.tag);
+
 
 
 
