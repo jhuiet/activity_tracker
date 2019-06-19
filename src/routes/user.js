@@ -14,7 +14,7 @@ const userRoles = {
 router.post('/', async (req, res) => {
   return validateUserPost(req)
     .then(() => {
-      hashedPassword = Authenticator.hashPass(req.body.password);
+      let hashedPassword = Authenticator.hashPass(req.body.password);
       return req.context.models.User.create({
         firstName: req.body.firstName,
         lastName: req.body.lastName,
@@ -26,9 +26,9 @@ router.post('/', async (req, res) => {
       if (!user) Promise.reject('Error creating user in database');
       return res.status(status.CREATED).json(user);
     })
-    .catch(validationError =>
+    .catch(validationError =>{
       res.status(status.BAD_REQUEST).json(validationError)
-    );
+    });
 });
 
 router.get('/', async (req, res) => {

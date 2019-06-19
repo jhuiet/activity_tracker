@@ -4,8 +4,8 @@ var bcrypt = require('bcryptjs');
 
 export class Authenticator {
 
-  static hashPass(password) {
-    var salt = bcrypt.genSaltSync(10);
+  static hashPass(password) {    
+    let salt = bcrypt.genSaltSync(10);
     return bcrypt.hashSync(password, salt);
   }
 

@@ -9,21 +9,24 @@ const RSA_PRIVATE_KEY = 'thiskeysecretisveryEZSecure'; //fs.readFileSync('./demo
 router.post('/login', async (req, res) => {
   return validateEmailAndPassword(req)
     .then(user => {
+      console.dir('yoy');
       const expiresAfter = 24 * 60 * 60; //24 hours
       const jwtBearerToken = jwt.sign(
-        { id: user.Id, role: user.role, expiresAfter0: expiresAfter },
-        RSA_PRIVATE_KEY,
-        {
-          algorithm: 'RS256',
-          expiresIn: expiresAfter,
-          subject: userId,
-        }
+        { id: user.Id, role: user.role, expiresAfter: expiresAfter },
+        RSA_PRIVATE_KEY,{ algorithm: 'RS256'} //todo: why does this cause error???
+        // {
+        //   algorithm: 'RS256',
+        //   expiresIn: expiresAfter,
+        //   subject: user.Id
+        // }
       );
+      console.dir(jwtBearerToken);
       res.cookie('SESSIONID', jwtBearerToken, {
         httpOnly: true,
         secure: true,
         expires: new Date(Date.now() + expiresAfter),
       });
+      return res.status(status.OK).json();
       // return res.status(status.OK).send({ "user": user, "access_token": jwtBearerToken, "expires_in": expiresIn })
     })
     .catch(err => {
@@ -31,8 +34,8 @@ router.post('/login', async (req, res) => {
     });
 });
 
-function validateEmailAndPassword(req) {
-  const user = req.context.models.User.findOne({
+async function validateEmailAndPassword(req) {
+  const user = await req.context.models.User.findOne({
     where: {
       email: req.body.email,
     },
@@ -46,8 +49,8 @@ function validateEmailAndPassword(req) {
   ) {
     Promise.reject('Invalid password entered');
   }
-  if (user.role === 'inactive')
-    return Promise.reject('User has not been activated yet');
+  // if (user.role === 'inactive')
+    // return Promise.reject('User has not been activated yet');
   return Promise.resolve(user);
 }
 
